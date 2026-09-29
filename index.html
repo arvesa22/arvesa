@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hidden Waterfall</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f1e8;
+            color: #183b2b;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            padding: 20px 5%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+        }
+
+        nav {
+            max-width: 1250px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 9px;
+            letter-spacing: 3px;
+            font-weight: normal;
+            margin-top: 4px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 13px;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            cursor: pointer;
+            padding-bottom: 5px;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: #9fd8b4;
+            border-bottom: 2px solid #9fd8b4;
+        }
+
+        /* =========================
+           PAGE SYSTEM
+        ========================= */
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .page.active-page {
+            display: block;
+        }
+
+        /* =========================
+           HOME
+        ========================= */
+
+        .hero {
+            min-height: 100vh;
+            background:
+                linear-gradient(
+                    rgba(0,0,0,0.4),
+                    rgba(0,0,0,0.55)
+                ),
+                url("waterfall.jpg.jpeg") center/cover no-repeat;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero-small {
+            font-size: 14px;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(55px, 10vw, 120px);
+            line-height: 0.85;
+            letter-spacing: 5px;
+            font-weight: 800;
+        }
+
+        .hero h1 span {
+            display: block;
+            color: #c7e8d2;
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin: 35px auto;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .main-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border: 1px solid white;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 2px;
+            font-size: 12px;
+            cursor: pointer;
+            background: transparent;
+            transition: 0.3s;
+        }
+
+        .main-btn:hover {
+            background: white;
+            color: #183b2b;
+        }
+
+        .home-footer {
+            margin-top: 70px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* =========================
+           GENERAL SECTION
+        ========================= */
+
+        .section {
+            max-width: 1200px;
+            margin: auto;
+            padding: 90px 30px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title small {
+            display: block;
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+            opacity: 0.7;
+        }
+
+        .section-title h2 {
+            font-size: 48px;
+            letter-spacing: 2px;
+        }
+
+        /* =========================
+           DESTINATIONS
+        ========================= */
+
+        .destination-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .destination-card {
+            background: white;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .destination-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-content small {
+            font-size: 11px;
+            letter-spacing: 2px;
+            opacity: 0.6;
+        }
+
+        .card-content h3 {
+            font-size: 25px;
+            margin: 12px 0;
+        }
+
+        .card-content p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .explore-btn {
+            border: none;
+            background: #183b2b;
+            color: white;
+            padding: 12px 20px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .explore-btn:hover {
+            background: #315d45;
+        }
+
+        /* =========================
+           DETAIL PAGE
+        ========================= */
+
+        .detail {
+            min-height: calc(100vh - 80px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            max-width: 1200px;
+            margin: auto;
+            padding: 90px 30px;
+            align-items: center;
+        }
+
+        .detail-image img {
+            width: 100%;
+            height: 550px;
+            object-fit: cover;
+        }
+
+        .detail-content small {
+            letter-spacing: 4px;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        .detail-content h1 {
+            font-size: 55px;
+            margin: 15px 0 25px;
+            line-height: 1;
+        }
+
+        .detail-content p {
+            font-size: 16px;
+            line-height: 1.9;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .location-box {
+            background: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid #183b2b;
+        }
+
+        .location-box strong {
+            display: block;
+            margin-bottom: 7px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid #183b2b;
+            color: #183b2b;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #183b2b;
+            color: white;
+        }
+
+        /* =========================
+           ABOUT
+        ========================= */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .about-content small {
+            letter-spacing: 4px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .about-content h2 {
+            font-size: 50px;
+            margin: 15px 0 25px;
+        }
+
+        .about-content h3 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .about-content p {
+            line-height: 1.9;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .values {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .value-box {
+            background: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .value-box h4 {
+            margin: 10px 0;
+        }
+
+        .value-box p {
+            font-size: 13px;
+            margin: 0;
+        }
+
+        /* =========================
+           GALLERY
+        ========================= */
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: 0.3s;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+        }
+
+        /* =========================
+           CONTACT
+        ========================= */
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-info h2 {
+            font-size: 50px;
+            margin: 15px 0 30px;
+        }
+
+        .contact-info p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .contact-item {
+            margin: 20px 0;
+        }
+
+        .contact-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        form {
+            background: white;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+        }
+
+        form input,
+        form textarea {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            padding: 15px 5px;
+            margin-bottom: 25px;
+            font-family: inherit;
+            outline: none;
+            background: transparent;
+        }
+
+        form textarea {
+            height: 130px;
+            resize: vertical;
+        }
+
+        form button {
+            background: #183b2b;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           AUDIO
+        ========================= */
+
+        audio {
+            display: none;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 800px) {
+
+            header {
+                padding: 15px 20px;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li a {
+                font-size: 11px;
+            }
+
+            .page {
+                padding-top: 110px;
+            }
+
+            .hero {
+                min-height: calc(100vh - 0px);
+            }
+
+            .destination-grid,
+            .detail,
+            .about-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-image img {
+                height: 350px;
+            }
+
+            .detail-content h1,
+            .about-content h2,
+            .contact-info h2 {
+                font-size: 40px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .values {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<header>
+
+    <nav>
+
+        <div class="logo">
+            HIDDEN WATERFALL
+            <span>TEMUKAN • JELAJAHI • LESTARIKAN</span>
+        </div>
+
+        <ul>
+
+            <li>
+                <a id="nav-home"
+                   class="active"
+                   onclick="showPage('home')">
+                    HOME
+                </a>
+            </li>
+
+            <li>
+                <a id="nav-destinations"
+                   onclick="showPage('destinations')">
+                    DESTINATIONS
+                </a>
+            </li>
+
+            <li>
+                <a id="nav-about"
+                   onclick="showPage('about')">
+                    ABOUT
+                </a>
+            </li>
+
+            <li>
+                <a id="nav-gallery"
+                   onclick="showPage('gallery')">
+                    GALLERY
+                </a>
+            </li>
+
+            <li>
+                <a id="nav-contact"
+                   onclick="showPage('contact')">
+                    CONTACT
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</header>
+
+
+<!-- =========================
+     AUDIO
+========================= -->
+
+<audio id="backgroundSound" autoplay loop>
+    <source src="instrumental.mp3.mp3" type="audio/mpeg">
+</audio>
+
+
+<!-- =========================
+     HOME
+========================= -->
+
+<div id="home" class="page active-page">
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-small">
+                TEMUKAN KEINDAHAN TERSEMBUNYI
+            </div>
+
+            <h1>
+                HIDDEN
+                <span>WATERFALL</span>
+            </h1>
+
+            <p>
+                Temukan keindahan air terjun tersembunyi
+                dan nikmati pesona alam Indonesia
+                yang masih alami.
+            </p>
+
+            <button
+                class="main-btn"
+                type="button"
+                onclick="showPage('destinations')">
+
+                EXPLORE DESTINATIONS
+
+            </button>
+
+            <div class="home-footer">
+                © Arya
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     DESTINATIONS
+========================= -->
+
+<div id="destinations" class="page">
+
+    <section class="section">
+
+        <div class="section-title">
+
+            <small>
+                DISCOVER
+            </small>
+
+            <h2>
+                DESTINATIONS
+            </h2>
+
+        </div>
+
+
+        <div class="destination-grid">
+
+
+            <!-- SANGINAN -->
+
+            <div class="destination-card">
+
+                <img
+                    src="sanginan.jpg.jpeg"
+                    alt="Air Terjun Sanginan">
+
+                <div class="card-content">
+
+                    <small>
+                        WONOGIRI • JAWA TENGAH
+                    </small>
+
+                    <h3>
+                        Air Terjun Sanginan
+                    </h3>
+
+                    <p>
+                        Air terjun dengan suasana alami,
+                        sejuk, hijau, dan tenang yang berada
+                        di wilayah Wonogiri.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="explore-btn"
+                        onclick="showPage('sanginan')">
+
+                        EXPLORE →
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- BATU TILAM -->
+
+            <div class="destination-card">
+
+                <img
+                    src="batu-tilam.jpg.jpeg"
+                    alt="Air Terjun Batu Tilam">
+
+                <div class="card-content">
+
+                    <small>
+                        KAMPAR • RIAU
+                    </small>
+
+                    <h3>
+                        Air Terjun Batu Tilam
+                    </h3>
+
+                    <p>
+                        Keindahan air terjun yang dikelilingi
+                        hutan dan tebing alami di Kampar.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="explore-btn"
+                        onclick="showPage('batu')">
+
+                        EXPLORE →
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CUNCA REDE -->
+
+            <div class="destination-card">
+
+                <img
+                    src="cunca-rede.jpg.jpeg"
+                    alt="Air Terjun Cunca Rede">
+
+                <div class="card-content">
+
+                    <small>
+                        MANGGARAI TIMUR • NTT
+                    </small>
+
+                    <h3>
+                        Air Terjun Cunca Rede
+                    </h3>
+
+                    <p>
+                        Air terjun yang menawarkan suasana
+                        hutan hijau dan lingkungan alami.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="explore-btn"
+                        onclick="showPage('cunca')">
+
+                        EXPLORE →
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GENTONGAN -->
+
+            <div class="destination-card">
+
+                <img
+                    src="gentongan.jpg.jpeg"
+                    alt="Air Terjun Gentongan">
+
+                <div class="card-content">
+
+                    <small>
+                        IJEN • BONDOWOSO
+                    </small>
+
+                    <h3>
+                        Air Terjun Gentongan
+                    </h3>
+
+                    <p>
+                        Air terjun dengan suasana sejuk
+                        dan alami di kawasan Ijen.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="explore-btn"
+                        onclick="showPage('gentongan')">
+
+                        EXPLORE →
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     SANGINAN DETAIL
+========================= -->
+
+<div id="sanginan" class="page">
+
+    <section class="detail">
+
+        <div class="detail-image">
+
+            <img
+                src="sanginan.jpg.jpeg"
+                alt="Air Terjun Sanginan">
+
+        </div>
+
+        <div class="detail-content">
+
+            <small>
+                WONOGIRI • JAWA TENGAH
+            </small>
+
+            <h1>
+                Air Terjun Sanginan
+            </h1>
+
+            <p>
+                Air Terjun Sanginan merupakan salah satu
+                destinasi alam yang menawarkan suasana
+                sejuk, hijau, dan tenang. Lingkungan sekitar
+                air terjun masih terasa alami sehingga cocok
+                untuk menikmati suasana alam yang jauh dari
+                keramaian.
+            </p>
+
+            <div class="location-box">
+
+                <strong>
+                    LOCATION
+                </strong>
+
+                Desa Kepyar, Kecamatan Purwantoro,
+                Kabupaten Wonogiri, Jawa Tengah.
+
+            </div>
+
+            <button
+                type="button"
+                class="back-btn"
+                onclick="showPage('destinations')">
+
+                ← BACK TO DESTINATIONS
+
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     BATU TILAM DETAIL
+========================= -->
+
+<div id="batu" class="page">
+
+    <section class="detail">
+
+        <div class="detail-image">
+
+            <img
+                src="batu-tilam.jpg.jpeg"
+                alt="Air Terjun Batu Tilam">
+
+        </div>
+
+        <div class="detail-content">
+
+            <small>
+                KAMPAR • RIAU
+            </small>
+
+            <h1>
+                Air Terjun Batu Tilam
+            </h1>
+
+            <p>
+                Air Terjun Batu Tilam menghadirkan
+                pemandangan alam yang dikelilingi hutan
+                dan tebing alami. Suasananya yang masih
+                asri memberikan pengalaman menjelajahi
+                keindahan alam yang berbeda dari destinasi
+                wisata yang ramai.
+            </p>
+
+            <div class="location-box">
+
+                <strong>
+                    LOCATION
+                </strong>
+
+                Desa Kebun Tinggi,
+                Kecamatan Kampar Kiri Hulu,
+                Kabupaten Kampar, Riau.
+
+            </div>
+
+            <button
+                type="button"
+                class="back-btn"
+                onclick="showPage('destinations')">
+
+                ← BACK TO DESTINATIONS
+
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     CUNCA REDE DETAIL
+========================= -->
+
+<div id="cunca" class="page">
+
+    <section class="detail">
+
+        <div class="detail-image">
+
+            <img
+                src="cunca-rede.jpg.jpeg"
+                alt="Air Terjun Cunca Rede">
+
+        </div>
+
+        <div class="detail-content">
+
+            <small>
+                MANGGARAI TIMUR • NTT
+            </small>
+
+            <h1>
+                Air Terjun Cunca Rede
+            </h1>
+
+            <p>
+                Air Terjun Cunca Rede merupakan destinasi
+                alam dengan suasana hutan yang hijau dan
+                lingkungan yang masih alami. Keindahan air
+                terjun dan suasana sekitarnya membuat tempat
+                ini menarik untuk dijelajahi.
+            </p>
+
+            <div class="location-box">
+
+                <strong>
+                    LOCATION
+                </strong>
+
+                Desa Sano Lokom,
+                Kecamatan Rana Mese,
+                Kabupaten Manggarai Timur, NTT.
+
+            </div>
+
+            <button
+                type="button"
+                class="back-btn"
+                onclick="showPage('destinations')">
+
+                ← BACK TO DESTINATIONS
+
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     GENTONGAN DETAIL
+========================= -->
+
+<div id="gentongan" class="page">
+
+    <section class="detail">
+
+        <div class="detail-image">
+
+            <img
+                src="gentongan.jpg.jpeg"
+                alt="Air Terjun Gentongan">
+
+        </div>
+
+        <div class="detail-content">
+
+            <small>
+                IJEN • BONDOWOSO
+            </small>
+
+            <h1>
+                Air Terjun Gentongan
+            </h1>
+
+            <p>
+                Air Terjun Gentongan berada di kawasan Ijen
+                dan menawarkan suasana alam yang sejuk serta
+                pemandangan yang masih alami. Kawasan ini
+                menjadi salah satu pilihan untuk menikmati
+                keindahan alam Bondowoso.
+            </p>
+
+            <div class="location-box">
+
+                <strong>
+                    LOCATION
+                </strong>
+
+                Kawasan Ijen,
+                Kabupaten Bondowoso,
+                Jawa Timur.
+
+            </div>
+
+            <button
+                type="button"
+                class="back-btn"
+                onclick="showPage('destinations')">
+
+                ← BACK TO DESTINATIONS
+
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     ABOUT
+========================= -->
+
+<div id="about" class="page">
+
+    <section class="section">
+
+        <div class="about-grid">
+
+            <div class="about-image">
+
+                <img
+                    src="waterfall.jpg.jpeg"
+                    alt="Nature">
+
+            </div>
+
+            <div class="about-content">
+
+                <small>
+                    GET TO KNOW US
+                </small>
+
+                <h2>
+                    ABOUT US
+                </h2>
+
+                <h3>
+                    OUR STORY
+                </h3>
+
+                <h3>
+                    Discover The Hidden Beauty
+                </h3>
+
+                <p>
+                    Hidden Waterfall adalah website yang dibuat untuk 
+                    memperkenalkan berbagai air terjun tersembunyi di Indonesia.
+                     Website ini menyajikan informasi mengenai lokasi,
+                      keindahan, dan daya tarik setiap destinasi agar 
+                      pengunjung dapat mengenal tempat-tempat alami yang
+                       masih asri.
+                </p>
+
+                <div class="values">
+
+                    <div class="value-box">
+                        <div>🌿</div>
+                        <h4>EXPLORE</h4>
+                        <p>
+                            Menjelajahi keindahan alam.
+                        </p>
+                    </div>
+
+                    <div class="value-box">
+                        <div>💧</div>
+                        <h4>DISCOVER</h4>
+                        <p>
+                            Menemukan tempat baru.
+                        </p>
+                    </div>
+
+                    <div class="value-box">
+                        <div>🌎</div>
+                        <h4>PRESERVE</h4>
+                        <p>
+                            Menjaga alam tetap lestari.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     GALLERY
+========================= -->
+
+<div id="gallery" class="page">
+
+    <section class="section">
+
+        <div class="section-title">
+
+            <small>
+                VISUAL JOURNEY
+            </small>
+
+            <h2>
+                GALLERY
+            </h2>
+
+        </div>
+
+        <div class="gallery-grid">
+
+            <img
+                src="waterfall.jpg.jpeg"
+                alt="Waterfall">
+
+            <img
+                src="sanginan2.jpg.jpeg"
+                alt="Sanginan">
+
+            <img
+                src="batu-tilam2.jpg.jpeg"
+                alt="Batu Tilam">
+
+            <img
+                src="cunca-rede2.jpg.jpeg"
+                alt="Cunca Rede">
+
+            <img
+                src="gentongan2.jpg.jpeg"
+                alt="Gentongan">
+
+            <img
+                src="forest.jpg.jpeg"
+                alt="Forest">
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================
+     CONTACT
+========================= -->
+
+<div id="contact" class="page">
+
+    <section class="section">
+
+        <div class="contact-grid">
+
+
+            <div class="contact-info">
+
+                <small>
+                    GET IN TOUCH
+                </small>
+
+                <h2>
+                    CONTACT US
+                </h2>
+
+                <p>
+                    Punya pertanyaan atau ingin berbagi
+                    informasi mengenai destinasi air terjun?
+                    Hubungi kami melalui informasi berikut.
+                </p>
+
+
+                <div class="contact-item">
+
+                    <strong>
+                        EMAIL
+                    </strong>
+
+                    aryavenusssaputra22@gmail.com
+
+                </div>
+
+
+                <div class="contact-item">
+
+                    <strong>
+                        PHONE
+                    </strong>
+
+                    +62 857-4153-5057
+
+                </div>
+
+
+                <div class="contact-item">
+
+                    <strong>
+                        LOCATION
+                    </strong>
+
+                    Indonesia
+
+                </div>
+
+            </div>
+
+
+            <form onsubmit="sendMessage(event)">
+
+                <input
+                    type="text"
+                    placeholder="Your Name"
+                    required>
+
+                <input
+                    type="email"
+                    placeholder="Your Email"
+                    required>
+
+                <textarea
+                    placeholder="Your Message"
+                    required></textarea>
+
+                <button type="submit">
+                    SEND MESSAGE
+                </button>
+
+            </form>
+
+
+        </div>
+
+    </section>
+
+</div>
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+    // =========================
+    // NAVIGASI HALAMAN
+    // =========================
+
+    function showPage(pageId) {
+
+        // Sembunyikan semua halaman
+        const pages = document.querySelectorAll(".page");
+
+        pages.forEach(function(page) {
+            page.classList.remove("active-page");
+        });
+
+        // Tampilkan halaman yang dipilih
+        const selectedPage = document.getElementById(pageId);
+
+        if (!selectedPage) {
+            console.error("Page tidak ditemukan: " + pageId);
+            return;
+        }
+
+        selectedPage.classList.add("active-page");
+
+        // Reset menu aktif
+        const menus = document.querySelectorAll("nav ul li a");
+
+        menus.forEach(function(menu) {
+            menu.classList.remove("active");
+        });
+
+        // Aktifkan menu yang sesuai
+        const navMenu =
+            document.getElementById("nav-" + pageId);
+
+        if (navMenu) {
+            navMenu.classList.add("active");
+        }
+
+        // Jika halaman detail, tetap aktifkan DESTINATIONS
+        if (
+            pageId === "sanginan" ||
+            pageId === "batu" ||
+            pageId === "cunca" ||
+            pageId === "gentongan"
+        ) {
+
+            const destinationMenu =
+                document.getElementById("nav-destinations");
+
+            if (destinationMenu) {
+                destinationMenu.classList.add("active");
+            }
+        }
+
+        // Kembali ke atas
+        window.scrollTo({
+            top: 0,
+            behavior: "instant"
+        });
+    }
+
+
+    // =========================
+    // CONTACT
+    // =========================
+
+    function sendMessage(event) {
+
+        event.preventDefault();
+
+        const form = event.target;
+
+        const nama =
+            form.querySelector('input[type="text"]').value;
+
+        const email =
+            form.querySelector('input[type="email"]').value;
+
+        const pesan =
+            form.querySelector("textarea").value;
+
+        // Cek data
+        if (!nama || !email || !pesan) {
+            alert("Silakan isi semua data terlebih dahulu.");
+            return;
+        }
+
+        // Nomor WhatsApp
+        const nomorWA = "6285741535057";
+
+        // Isi pesan WhatsApp
+        const pesanWA =
+            "Halo Hidden Waterfall!%0A%0A" +
+            "Nama: " + encodeURIComponent(nama) + "%0A" +
+            "Email: " + encodeURIComponent(email) + "%0A%0A" +
+            "Pesan:%0A" +
+            encodeURIComponent(pesan);
+
+        // Buka WhatsApp
+        window.open(
+            "https://wa.me/" +
+            nomorWA +
+            "?text=" +
+            pesanWA,
+            "_blank"
+        );
+
+        // Bersihkan form
+        form.reset();
+    }
+
+
+    // =========================
+    // AUDIO
+    // =========================
+
+    window.addEventListener("load", function() {
+
+        const sound =
+            document.getElementById("backgroundSound");
+
+        if (sound) {
+
+            sound.play().catch(function() {
+                console.log(
+                    "Autoplay diblokir browser."
+                );
+            });
+
+        }
+    });
+
+
+    // =========================
+    // AUDIO SETELAH KLIK
+    // =========================
+
+    document.addEventListener(
+        "click",
+        function() {
+
+            const sound =
+                document.getElementById("backgroundSound");
+
+            if (sound) {
+                sound.play().catch(function() {});
+            }
+
+        },
+        { once: true }
+    );
+
+</script> 
